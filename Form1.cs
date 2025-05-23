@@ -43,96 +43,88 @@ namespace ImgDetector
             Mat gray = new Mat();
             Cv2.CvtColor(image, gray, ColorConversionCodes.BGR2GRAY);
 
-            //! 모서리 감지
-            Point2f[] corners = Cv2.GoodFeaturesToTrack(
-                gray,
-                maxCorners: 8,              //! 최대 8개의 코너를 찾는다 (모깍인 꼭지점 4쌍 유도)
-                qualityLevel: 0.01,         //! 코너 품질 임계값
-                minDistance: 10,            //! 코너 간 최소 거리
-                mask: null,                 //! 마스크 없음
-                blockSize: 3,               //! 계산 윈도우 크기
-                useHarrisDetector: false,   //! Harris 코너 검출기 사용 안 함
-                k: 0.04                     //! Harris 계수 (사용 안하지만 기본값 필요)
-            );
+
+
+
+            #region 1. Good FeaturesToTrack 알고리즘 (5/8 인식)
+            //Point2f[] corners = Cv2.GoodFeaturesToTrack(
+            //    gray,
+            //    maxCorners: 8,              //! 최대 8개의 코너를 찾는다 (모깍인 꼭지점 4쌍 유도)
+            //    qualityLevel: 0.002,         //! 코너 품질 임계값
+            //    minDistance: 20,            //! 코너 간 최소 거리 (보통 거리가 38.61픽셀 정도 나오니까 0~30 사이 설정 가능)
+            //    mask: null,                 //! 마스크 없음
+            //    blockSize: 3,               //! 계산 윈도우 크기
+            //    useHarrisDetector: false,   //! Harris 코너 검출기 사용 안 함
+            //    k: 0.04                     //! Harris 계수 (사용 안하지만 기본값 필요)
+            //);
+
+            #endregion
+
+            #region 2. Contour + ApproxPolyDP 알고리즘
+            //! 이진화
+            Mat binary = new Mat();
+            Cv2.Threshold(gray, binary, 100, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+
+            // 윤곽선 찾기
+            OpenCvSharp.Point[][] contours;
+            HierarchyIndex[] hierarchy;
+            Cv2.FindContours(binary, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+
+            // 꼭짓점 후보를 저장할 리스트
+            List<Point2f> cornerList = new List<Point2f>();
+
+            foreach (var contour in contours)
+            {
+                // 다각형 근사
+                OpenCvSharp.Point[] approx = Cv2.ApproxPolyDP(contour, epsilon: 10, closed: true);
+
+                if (approx.Length >= 4 && approx.Length <= 10)
+                {
+                    foreach (var pt in approx)
+                    {
+                        cornerList.Add(new Point2f(pt.X, pt.Y));
+                    }
+                }
+            }
+
+            // 꼭짓점 배열 생성
+            Point2f[] corners = cornerList.ToArray();
+            #endregion
+
+
+
+
+
 
             //! 기존 좌표 표시박스 초기화
             listBoxCorners.Items.Clear();
             
-            //! 코너가 최소 8개 이상 검출되었을 때 다음 작업 수행
-            if (corners != null && corners.Length >= 8)
+
+            for (int i = 0; i < corners.Length; i++)
             {
-                //! 거리 기준으로 가까운 두 점씩 묶기 위한 리스트와 사용 여부 배열
-                List<Tuple<Point2f, Point2f>> edgePairs = new List<Tuple<Point2f, Point2f>>();
-                bool[] used = new bool[corners.Length];
+                var point = new OpenCvSharp.Point((int)corners[i].X, (int)corners[i].Y);
 
-                //! 각 점에 대해 가장 가까운 점과 쌍을 만들기
-                for (int i = 0; i < corners.Length; i++)
-                {
-                    if (used[i]) continue;
+                //! 빨간색 점 그리기
+                Cv2.Circle(displayImg, point, radius: 3, color: Scalar.Red, thickness: -1);
 
-                    int closestIdx = -1;
-                    double minDist = double.MaxValue;
+                //! 인덱스 텍스트 그리기
+                Cv2.PutText(
+                    displayImg,
+                    (i+1).ToString(),                             // 텍스트 내용: 인덱스
+                    new CvPoint(point.X + 5, point.Y - 5),      // 위치: 점 옆 (조금 위, 오른쪽)
+                    HersheyFonts.HersheySimplex,                // 폰트
+                    1,                                          // 폰트 크기
+                    Scalar.Yellow,                              // 글자 색
+                    2                                           // 두께
+                );
 
-                    //! 다른 점들과 거리 비교
-                    for (int j = 0; j < corners.Length; j++)
-                    {
-                        if (i == j || used[j]) continue;
-
-                        //! 유클리드 거리 직접 계산
-                        double dx = corners[i].X - corners[j].X;
-                        double dy = corners[i].Y - corners[j].Y;
-                        double dist = Math.Sqrt(dx * dx + dy * dy);
-
-                        if (dist < minDist)
-                        {
-                            minDist = dist;
-                            closestIdx = j;
-                        }
-                    }
-
-                    //! 가장 가까운 점이 있으면 쌍으로 묶고 처리
-                    if (closestIdx >= 0)
-                    {
-                        used[i] = used[closestIdx] = true;
-                        edgePairs.Add(Tuple.Create(corners[i], corners[closestIdx]));
-
-                        // 점 1 찍기
-                        Cv2.Circle(displayImg,
-                            new OpenCvSharp.Point((int)corners[i].X, (int)corners[i].Y),
-                            radius: 3,
-                            color: Scalar.Red,
-                            thickness: -1);
-
-                        // 점 2 찍기
-                        Cv2.Circle(displayImg,
-                            new OpenCvSharp.Point((int)corners[closestIdx].X, (int)corners[closestIdx].Y),
-                            radius: 3,
-                            color: Scalar.Red,
-                            thickness: -1);
-
-                        // 두 점 사이 선 그리기
-                        Cv2.Line(
-                            displayImg,
-                            new OpenCvSharp.Point((int)corners[i].X, (int)corners[i].Y),
-                            new OpenCvSharp.Point((int)corners[closestIdx].X, (int)corners[closestIdx].Y),
-                            Scalar.LimeGreen,
-                            2
-                        );
-
-
-                        // 거리 정보 출력
-                        string lineInfo = $"길이: {minDist:F1} (X1: {corners[i].X:F1}, Y1: {corners[i].Y:F1} - X2: {corners[closestIdx].X:F1}, Y2: {corners[closestIdx].Y:F1})";
-                        listBoxCorners.Items.Add(lineInfo);
-
-                    }
-                }
-
-                pictureBox1.Image = BitmapConverter.ToBitmap(displayImg); //! 네모 그린 후 이미지 표시
+                //! 좌표 리스트에도 추가
+                listBoxCorners.Items.Add($"{i+1}, {corners[i]}");
             }
-            else
-            {
-                MessageBox.Show("코너 검출 불가");
-            }
+
+
+
+            pictureBox1.Image = BitmapConverter.ToBitmap(displayImg); //! 네모 그린 후 이미지 표시
 
         }
     }
