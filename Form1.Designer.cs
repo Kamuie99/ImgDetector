@@ -41,7 +41,7 @@
             // 
             this.pictureBox1.Location = new System.Drawing.Point(52, 87);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(221, 210);
+            this.pictureBox1.Size = new System.Drawing.Size(670, 613);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -67,7 +67,7 @@
             // 
             // btnDetectCorners
             // 
-            this.btnDetectCorners.Location = new System.Drawing.Point(112, 314);
+            this.btnDetectCorners.Location = new System.Drawing.Point(333, 706);
             this.btnDetectCorners.Name = "btnDetectCorners";
             this.btnDetectCorners.Size = new System.Drawing.Size(94, 27);
             this.btnDetectCorners.TabIndex = 3;
@@ -79,16 +79,16 @@
             // 
             this.listBoxCorners.FormattingEnabled = true;
             this.listBoxCorners.ItemHeight = 12;
-            this.listBoxCorners.Location = new System.Drawing.Point(329, 87);
+            this.listBoxCorners.Location = new System.Drawing.Point(752, 85);
             this.listBoxCorners.Name = "listBoxCorners";
-            this.listBoxCorners.Size = new System.Drawing.Size(120, 88);
+            this.listBoxCorners.Size = new System.Drawing.Size(321, 220);
             this.listBoxCorners.TabIndex = 4;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Roboto", 12F);
-            this.label2.Location = new System.Drawing.Point(327, 58);
+            this.label2.Location = new System.Drawing.Point(750, 56);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(94, 21);
             this.label2.TabIndex = 5;
@@ -99,7 +99,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1200, 818);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.listBoxCorners);
             this.Controls.Add(this.btnDetectCorners);
