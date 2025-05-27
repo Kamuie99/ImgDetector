@@ -41,10 +41,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.panelImage = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBlur)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarApprox)).BeginInit();
+            this.panelImage.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -79,15 +82,15 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(52, 87);
+            this.pictureBox1.Location = new System.Drawing.Point(45, 22);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(449, 431);
+            this.pictureBox1.Size = new System.Drawing.Size(388, 374);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // trackBarThreshold
             // 
-            this.trackBarThreshold.Location = new System.Drawing.Point(579, 158);
+            this.trackBarThreshold.Location = new System.Drawing.Point(579, 190);
             this.trackBarThreshold.Maximum = 255;
             this.trackBarThreshold.Name = "trackBarThreshold";
             this.trackBarThreshold.Size = new System.Drawing.Size(202, 45);
@@ -120,7 +123,7 @@
             // 
             this.labelThreshold.AutoSize = true;
             this.labelThreshold.Font = new System.Drawing.Font("Roboto", 12F);
-            this.labelThreshold.Location = new System.Drawing.Point(586, 120);
+            this.labelThreshold.Location = new System.Drawing.Point(586, 152);
             this.labelThreshold.Name = "labelThreshold";
             this.labelThreshold.Size = new System.Drawing.Size(80, 21);
             this.labelThreshold.TabIndex = 7;
@@ -158,7 +161,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(588, 143);
+            this.label3.Location = new System.Drawing.Point(588, 175);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(81, 12);
             this.label3.TabIndex = 11;
@@ -173,12 +176,33 @@
             this.label4.TabIndex = 12;
             this.label4.Text = "다각형 근사화 정확도";
             // 
+            // panelImage
+            // 
+            this.panelImage.AutoScroll = true;
+            this.panelImage.Controls.Add(this.pictureBox1);
+            this.panelImage.Location = new System.Drawing.Point(52, 98);
+            this.panelImage.Name = "panelImage";
+            this.panelImage.Size = new System.Drawing.Size(475, 422);
+            this.panelImage.TabIndex = 13;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(594, 98);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(132, 23);
+            this.button1.TabIndex = 14;
+            this.button1.Text = "누가 제일 기노";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.btnAnalyzeLongestEdge_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(905, 554);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.panelImage);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -191,13 +215,13 @@
             this.Controls.Add(this.btnDetect);
             this.Controls.Add(this.btnLoadImage);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.pictureBox1);
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarThreshold)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBlur)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarApprox)).EndInit();
+            this.panelImage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -217,6 +241,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Panel panelImage;
+        private System.Windows.Forms.Button button1;
     }
 }
 
